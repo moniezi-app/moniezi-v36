@@ -1,0 +1,374 @@
+/* Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Universal box-sizing (prevents padding from causing overflow) */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Prevent iOS Safari auto-zoom on input focus (triggers at font-size <16px) */
+@media screen and (max-width: 430px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Base styles */
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+/* iOS safe-area fallback for older WebKit (constant() was the pre-standard name) */
+@supports (padding-top: constant(safe-area-inset-top)) {
+  .safe-area-top {
+    padding-top: max(16px, constant(safe-area-inset-top));
+  }
+  .safe-area-bottom {
+    padding-bottom: max(16px, constant(safe-area-inset-bottom));
+  }
+}
+
+/* Lock body scroll while modal/drawer is open (iOS needs position:fixed) */
+body.modal-open {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  /* Preserve current scroll position (set via JS) */
+  top: var(--scroll-top, 0px);
+}
+
+/* Modal/drawer overlays: prevent horizontal drift on iOS */
+.modal-overlay {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+
+/* Dedicated opaque drawer layer.
+   These rules do not depend on Tailwind class extraction, so the drawer remains
+   a solid modal surface even after moving drawer components into /src. */
+.moniezi-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.55);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.dark .moniezi-drawer-overlay {
+  background: rgba(2, 6, 23, 0.72);
+}
+
+.moniezi-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.moniezi-drawer-panel {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: min(100%, 32rem);
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 25px 80px rgba(2, 6, 23, 0.35);
+}
+
+.dark .moniezi-drawer-panel {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+@media (min-width: 640px) {
+  .moniezi-drawer-overlay {
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .moniezi-drawer-panel {
+    height: auto;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+  }
+}
+
+/* Scrollable content inside modals */
+.modal-scroll-area {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: clip;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.drawer-shell {
+  min-height: 0;
+}
+
+.drawer-scroll-area {
+  scroll-padding-top: 120px;
+  scroll-padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 120px);
+}
+
+/* Extreme-contrast light mode pass */
+html.theme-light,
+html.theme-light body,
+html.theme-light #root {
+  background: #ffffff;
+  color: #020617;
+}
+
+html.theme-light body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 600;
+}
+
+html.theme-light h1,
+html.theme-light h2,
+html.theme-light h3,
+html.theme-light h4,
+html.theme-light h5,
+html.theme-light h6 {
+  color: #020617;
+  font-weight: 900;
+}
+
+html.theme-light .bg-slate-50,
+html.theme-light .bg-slate-100,
+html.theme-light .bg-gray-50,
+html.theme-light .bg-gray-100,
+html.theme-light .bg-white\/80,
+html.theme-light .bg-white\/90,
+html.theme-light .bg-white\/95 {
+  background-color: #ffffff !important;
+}
+
+html.theme-light .bg-slate-50\/50,
+html.theme-light .bg-slate-50\/70,
+html.theme-light .bg-slate-100\/80,
+html.theme-light .bg-slate-100\/90,
+html.theme-light .bg-gray-50\/80,
+html.theme-light .bg-gray-100\/80 {
+  background-color: rgba(255,255,255,0.985) !important;
+}
+
+html.theme-light .text-slate-200,
+html.theme-light .text-slate-300,
+html.theme-light .text-slate-400,
+html.theme-light .text-slate-500,
+html.theme-light .text-slate-600,
+html.theme-light .text-slate-700,
+html.theme-light .text-gray-200,
+html.theme-light .text-gray-300,
+html.theme-light .text-gray-400,
+html.theme-light .text-gray-500,
+html.theme-light .text-gray-600,
+html.theme-light .text-gray-700,
+html.theme-light .text-gray-800 {
+  color: #020617 !important;
+}
+
+html.theme-light .text-slate-800,
+html.theme-light .text-slate-900,
+html.theme-light .text-gray-900,
+html.theme-light .text-black {
+  color: #01040b !important;
+}
+
+html.theme-light .font-normal {
+  font-weight: 600 !important;
+}
+
+html.theme-light .font-medium {
+  font-weight: 700 !important;
+}
+
+html.theme-light .font-semibold {
+  font-weight: 800 !important;
+}
+
+html.theme-light .font-bold,
+html.theme-light .font-extrabold {
+  font-weight: 900 !important;
+}
+
+html.theme-light label,
+html.theme-light button,
+html.theme-light input,
+html.theme-light textarea,
+html.theme-light select {
+  color: #01040b;
+}
+
+html.theme-light input::placeholder,
+html.theme-light textarea::placeholder {
+  color: #111827 !important;
+  font-weight: 700 !important;
+  opacity: 1;
+}
+
+html.theme-light .border-slate-100,
+html.theme-light .border-slate-200,
+html.theme-light .border-slate-300,
+html.theme-light .border-gray-200,
+html.theme-light .border-gray-300 {
+  border-color: #748399 !important;
+}
+
+html.theme-light .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+html.theme-light .divide-slate-200 > :not([hidden]) ~ :not([hidden]),
+html.theme-light .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #748399 !important;
+}
+
+html.theme-light :is(div, section, article, aside)[class*="rounded"][class*="shadow"][class*="bg-white"],
+html.theme-light :is(div, section, article, aside)[class*="rounded"][class*="shadow"][class*="bg-slate-50"],
+html.theme-light :is(div, section, article, aside)[class*="rounded"][class*="shadow"][class*="bg-slate-100"] {
+  border: 1px solid #748399 !important;
+}
+
+html.theme-light :is(div, section, article, aside)[class*="rounded"][class*="shadow"][class*="bg-white"].border-0,
+html.theme-light :is(div, section, article, aside)[class*="rounded"][class*="shadow"][class*="bg-slate-50"].border-0,
+html.theme-light :is(div, section, article, aside)[class*="rounded"][class*="shadow"][class*="bg-slate-100"].border-0 {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: #748399 !important;
+}
+
+html.theme-light .shadow-sm {
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.14) !important;
+}
+
+html.theme-light .shadow,
+html.theme-light .shadow-md {
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.16) !important;
+}
+
+html.theme-light .shadow-lg,
+html.theme-light .shadow-xl,
+html.theme-light .shadow-2xl {
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18) !important;
+}
+
+html.theme-light .ring-slate-200,
+html.theme-light .ring-slate-300,
+html.theme-light .ring-gray-200,
+html.theme-light .ring-gray-300 {
+  --tw-ring-color: rgba(116, 131, 153, 0.40) !important;
+}
+
+/* v30.4.4 persistent drawer exit control.
+   The transaction drawer must always provide an obvious escape path even when
+   the user scrolls or the iPhone keyboard is open. */
+.moniezi-drawer-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  flex: 0 0 auto;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+}
+
+.dark .moniezi-drawer-header {
+  background: #0f172a;
+  border-bottom-color: rgba(148, 163, 184, 0.18);
+  box-shadow: 0 10px 28px rgba(2, 6, 23, 0.32);
+}
+
+.moniezi-drawer-close-button {
+  min-width: 3.5rem;
+  min-height: 3.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(226, 232, 240, 0.96);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+}
+
+.dark .moniezi-drawer-close-button {
+  background: rgba(2, 6, 23, 0.96);
+  box-shadow: 0 10px 24px rgba(2, 6, 23, 0.42);
+}
+
+.moniezi-drawer-backdrop {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  cursor: default;
+}
+
+/* v35.0.0 Equity segmented-tab contrast baseline.
+   These explicit classes override MONIEZI's global light-mode button/text rules,
+   which force button text dark and caused selected Equity tabs to become unreadable. */
+.moniezi-equity-primary-tab,
+.moniezi-equity-primary-tab .moniezi-equity-primary-tab-label {
+  -webkit-text-fill-color: currentColor !important;
+}
+
+html.theme-light .moniezi-equity-primary-tab.is-active,
+html.theme-light .moniezi-equity-primary-tab.is-active .moniezi-equity-primary-tab-label,
+html:not(.dark) .moniezi-equity-primary-tab.is-active,
+html:not(.dark) .moniezi-equity-primary-tab.is-active .moniezi-equity-primary-tab-label {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html.theme-light .moniezi-equity-primary-tab.is-inactive,
+html.theme-light .moniezi-equity-primary-tab.is-inactive .moniezi-equity-primary-tab-label,
+html:not(.dark) .moniezi-equity-primary-tab.is-inactive,
+html:not(.dark) .moniezi-equity-primary-tab.is-inactive .moniezi-equity-primary-tab-label {
+  color: #020617 !important;
+  -webkit-text-fill-color: #020617 !important;
+}
+
+html.dark .moniezi-equity-primary-tab.is-active,
+html.dark .moniezi-equity-primary-tab.is-active .moniezi-equity-primary-tab-label,
+.dark .moniezi-equity-primary-tab.is-active,
+.dark .moniezi-equity-primary-tab.is-active .moniezi-equity-primary-tab-label {
+  color: #020617 !important;
+  -webkit-text-fill-color: #020617 !important;
+}
+
+html.dark .moniezi-equity-primary-tab.is-inactive,
+html.dark .moniezi-equity-primary-tab.is-inactive .moniezi-equity-primary-tab-label,
+.dark .moniezi-equity-primary-tab.is-inactive,
+.dark .moniezi-equity-primary-tab.is-inactive .moniezi-equity-primary-tab-label {
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+}
